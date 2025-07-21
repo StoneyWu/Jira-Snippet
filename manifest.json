@@ -14,7 +14,7 @@
     "default_popup": "popup/info.html"
   },
   "background": {
-    "scripts": ["scripts/contextMenu.js"]
+    "service_worker": "scripts/contextMenu.js"
   },
   "content_scripts": [
     {
@@ -24,7 +24,6 @@
       ],
       "js": [
         "scripts/storage-utils.js",
-        "scripts/settings.js",
         "scripts/copybtn.js"
       ],
       "run_at": "document_start",

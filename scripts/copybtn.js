@@ -37,8 +37,10 @@ function getIssueDataAndWriteToClipboard(issueId)
     const issueAssignee = data['fields']['assignee'] ? data['fields']['assignee'].displayName : 'Unassigned';
     const issueUrl = `${window.location.origin}/browse/${issueId}`;
 
-    storageGet('format').then(function (storageData) {
+    storageGet(['format', 'linkify']).then(function (storageData) {
       const format = storageData.format || '[{key}] {title}';
+      const linkify = storageData.linkify || false;
+
       const outputText = format
         .replaceAll('{key}', issueKey)
         .replaceAll('{title}', issueTitle)
@@ -50,7 +52,15 @@ function getIssueDataAndWriteToClipboard(issueId)
         .replaceAll('{assignee}', issueAssignee)
         .replaceAll('{url}', issueUrl)
       
+      if (linkify) {
+        const html = `<a href="${issueUrl}">${outputText}</a>`;
+        const blob = new Blob([html], { type: 'text/html' });
+        const plain = new Blob([outputText], { type: 'text/plain' });
+        const data = [new ClipboardItem({ [blob.type]: blob, [plain.type]: plain })];
+        navigator.clipboard.write(data);
+      } else {
         navigator.clipboard.writeText(outputText);
+      }
     });
   });
 }
