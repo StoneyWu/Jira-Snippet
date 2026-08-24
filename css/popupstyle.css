@@ -1,11 +1,37 @@
-body {
-    display: flexbox;
+html {
+    box-sizing: border-box;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    /* Fixed width, no percentage height: a percentage-sized popup makes
+       Chrome's auto-sizing oscillate between measurements, which shows up
+       as the popup jittering while it is open. */
+    width: 272px;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    padding: 10px;
     background-color: rgb(13, 12, 12);
     font-family: 'Courier New', Courier, monospace;
+  }
+
+  body > img {
+    display: block;
+    max-width: 100%;
+    height: auto;
   }
 
   .title {
@@ -19,7 +45,7 @@ body {
     align-items: center;
     justify-content: space-around;
     width: 100%;
-    padding: 0 10px;
+    margin-top: 10px;
   }
 
   .settings-button {
@@ -30,7 +56,6 @@ body {
     font-size: 1.5em;
     color: white;
     text-decoration: none;
-    margin-left: 10px;
   }
 
   .github-button {
@@ -41,5 +66,4 @@ body {
     color: white;
     padding: 5px 10px;
     border-radius: 5px;
-    margin-left: 10px;
   }
