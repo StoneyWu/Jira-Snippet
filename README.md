@@ -27,14 +27,80 @@ Jira Snippet is a browser extension that streamlines your Jira workflow by allow
 
 ## Installation
 
-### From Source
+### From a release zip (recommended for most people)
+
+1. Download `jira-snippet-<version>.zip` from the [Releases page](https://github.com/StoneyWu/Jira-Snippet/releases)
+2. Unzip it into a folder you intend to keep — Chrome loads the extension from
+   this folder every time it starts, so don't delete it afterwards
+3. Open `chrome://extensions/` (Edge: `edge://extensions/`)
+4. Turn on **Developer mode** (toggle in the top-right corner)
+5. Click **Load unpacked** and select the unzipped folder
+
+To update later, download the new zip, replace the folder contents, and click
+the refresh icon on the extension card.
+
+> Chrome and Edge only allow one-click `.crx` installs for extensions hosted in
+> their web stores, so the unpacked-folder route above is the way to sideload
+> this one. See [Publishing](#publishing-to-a-store) for the one-click option.
+
+### From source
+
 1. Clone this repository
-2. Open your browser's extension management page:
-   - Chrome: `chrome://extensions/`
-   - Firefox: `about:addons`
-   - Edge: `edge://extensions/`
-3. Enable "Developer mode"
-4. Click "Load unpacked" and select the extension directory
+2. Open `chrome://extensions/`, enable **Developer mode**
+3. Click **Load unpacked** and select the repository directory
+
+## Building
+
+`build.sh` produces a clean, store-ready zip containing only the files the
+browser loads (no `.git`, `.DS_Store`, README, or CI config):
+
+```bash
+./build.sh
+# -> dist/jira-snippet-2.4.zip
+```
+
+The name and version in the filename both come from `manifest.json`, so
+bumping the version there is all a release needs.
+
+Pushing a `v*` tag builds the same zip in CI and attaches it to a GitHub
+Release automatically:
+
+```bash
+git tag v2.4 && git push origin v2.4
+```
+
+> This repository is a fork, and GitHub disables Actions on forks by default.
+> Enable it once under **Settings → Actions → General** before the tag will
+> build anything.
+
+### Reusing this setup in another extension
+
+Both files are written to be portable. Copy `build.sh` and
+`.github/workflows/release.yml` into another Manifest V3 extension and edit
+one line: the `FILES` array at the top of `build.sh`, listing the paths that
+extension actually ships.
+
+The workflow needs no edits at all — its only assumption is that `./build.sh`
+exists and writes to `dist/*.zip`.
+
+`FILES` is an explicit allowlist rather than a set of exclusions on purpose: a
+forgotten entry breaks the extension immediately and visibly, while a
+forgotten exclusion quietly publishes private files to a public store.
+
+## Publishing to a store
+
+Publishing gives users a real one-click install plus automatic updates. The zip
+from `build.sh` is what each store wants:
+
+| Store | Cost | Notes |
+| --- | --- | --- |
+| [Chrome Web Store](https://chrome.google.com/webstore/devconsole) | one-time $5 developer fee | Review typically takes a few days; also covers Chrome-based browsers via manual install |
+| [Edge Add-ons](https://partner.microsoft.com/dashboard/microsoftedge) | free | Accepts the same Chrome MV3 zip |
+| [Firefox Add-ons (AMO)](https://addons.mozilla.org/developers/) | free | Requires signing; add a `browser_specific_settings.gecko.id` to `manifest.json` first |
+
+Each store also needs a listing: an icon, at least one screenshot, a short
+description, and a privacy justification for the `storage` and `contextMenus`
+permissions.
 
 ## Usage
 
